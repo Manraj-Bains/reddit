@@ -49,7 +49,6 @@ router.get('/edit/:id', ensureAuthenticated, async (req, res) => {
   }
 });
 
-
 // Handle the editing of a post
 router.post('/edit/:id', ensureAuthenticated, async (req, res) => {
   const postId = parseInt(req.params.id);
@@ -61,7 +60,6 @@ router.post('/edit/:id', ensureAuthenticated, async (req, res) => {
       res.status(400).send("Error updating the post");
   }
 });
-
 
 // Confirm deletion of a post
 router.get("/deleteconfirm/:postid", ensureAuthenticated, async (req, res) => {
@@ -90,27 +88,22 @@ router.post("/comment-create/:postid", ensureAuthenticated, async (req, res) => 
 });
 
 // POST route to handle voting
-router.post("/vote/:postId", ensureAuthenticated, async (req: Request, res: Response) => {
-  const postId = parseInt(req.params.postId);
+router.post("/vote/:postid", ensureAuthenticated, async (req: Request, res: Response) => {
+  const postId = parseInt(req.params.postid);
   const userId = (req.user as TUser).id;
   const vote = parseInt(req.body.vote);
 
-  if (!userId) {
-      return res.status(401).json({ message: "Unauthorized" });
-  }
-
   const post = db.getPost(postId);
   if (!post) {
-      return res.status(404).json({ message: "Post not found" });
+    res.status(404).send("Post not found");
+    return;
   }
 
   // Update or remove the vote
-  if (vote === 1 || vote === -1) {
-      post.userVotes.set(userId, vote);
-  } else if (vote === 0) {
-      post.userVotes.delete(userId);
+  if (vote === 0) {
+    post.userVotes.delete(userId);
   } else {
-      return res.status(400).json({ message: "Invalid vote value" });
+    post.userVotes.set(userId, vote);
   }
 
   // Recalculate total votes
@@ -119,4 +112,7 @@ router.post("/vote/:postId", ensureAuthenticated, async (req: Request, res: Resp
   db.updatePost(postId, post);
   res.json({ votes: post.votes });
 });
+
+
+
 export default router;

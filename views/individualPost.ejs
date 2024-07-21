@@ -1,61 +1,62 @@
 <!DOCTYPE html>
-<html Lang="en">
+<html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.classless.min.css"
-    />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= post.title %></title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.classless.min.css" />
     <link href="/css/style.css" rel="stylesheet" />
-    <title>Homepage</title>
 </head>
 <body>
-<main>
-    <div class="authOptions">
-        <h1>Homepage</h1>
-        <% if (user) { %>
-        <a role="button" href="/auth/logout">Logout</a>
-        <% } else { %>
-        <a role="button" href="/auth/login">Login</a>
-        <% } %>
-    </div>
-    <h2>Welcome, <%= user?.uname || "Visitor" %>.</h2>
-    <div>
-        <h3>All Posts</h3>
-        <div class="post-container">
-            <% posts.forEach(post => { %>
-            <div class="post-card" data-post-id="<%= post.id %>">
-                <a href="/posts/show/<%= post.id %>"><%= post.title %></a>
-                <p><%= post.description %></p>
-                <p>Votes: <span class="vote-count"><%= post.votes %></span></p>
-                <% if (user) { %>
-                <div class="vote-buttons">
-                    <form action="/posts/vote/<%= post.id %>" method="post" class="vote-form">
-                        <input type="hidden" name="vote" value="1">
-                        <button type="submit" class="vote-btn">Upvote</button>
-                    </form>
-                    <form action="/posts/vote/<%= post.id %>" method="post" class="vote-form">
-                        <input type="hidden" name="vote" value="-1">
-                        <button type="submit" class="vote-btn">Downvote</button>
-                    </form>
-                </div>
-                <% } %>
-            </div>
-            <% }) %>
+    <main>
+        <div class="authOptions">
+            <h1>View Post</h1>
+            <a role="button" href="/posts">Home</a>
         </div>
-    </div>
-    <div>
-        <a href="/subs/list">Subgroups</a>
-    </div>
-    <% if (user) { %>
-    <div>
-        <a role="button" href="/posts/create">Create Post</a>
-    </div>
-    <% } %>
-    <p style="color: rgb(197, 172, 172)"></p>
-</main>
+        <div data-post-id="<%= post.id %>">
+            <h2><%= post.title %></h2>
+            <p><%= post.description %></p>
+            <p>Link: <a href="<%= post.link %>">Visit Link</a></p>
+            <p>Subgroup: <%= post.subgroup %></p>
+            <p>Created by: <%= post.creatorDetails.uname %>, at <%= new Date(post.timestamp).toLocaleString() %></p>
+            <p>Votes: <span class="vote-count"><%= post.votes %></span></p>
+            
+            <!-- Conditional Edit Button -->
+            <% if (user && user.id === post.creator) { %>
+                <a href="/posts/edit/<%= post.id %>" class="button">Edit Post</a>
+            <% } %>
+
+            <!-- Voting section -->
+            <form action="/posts/vote/<%= post.id %>" method="post" class="vote-form">
+                <input type="hidden" name="vote" value="1">
+                <button type="submit" class="vote-btn">Upvote</button>
+            </form>
+            <form action="/posts/vote/<%= post.id %>" method="post" class="vote-form">
+                <input type="hidden" name="vote" value="-1">
+                <button type="submit" class="vote-btn">Downvote</button>
+            </form>
+
+            <!-- Display comments -->
+            <% if (post.comments && post.comments.length > 0) { %>
+                <% post.comments.forEach(function(comment) { %>
+                    <div>
+                        <p><%= comment.description %></p>
+                        <p>Comment by <%= comment.creatorDetails.uname %>, at <%= new Date(comment.timestamp).toLocaleString() %></p>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <p>No comments yet.</p>
+            <% } %>
+
+            <!-- Add comment form -->
+            <% if (user) { %>
+                <form action="/posts/comment-create/<%= post.id %>" method="post">
+                    <textarea name="description" required></textarea>
+                    <button type="submit">Add Comment</button>
+                </form>
+            <% } %>
+        </div>
+    </main>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         document.querySelectorAll('.vote-form').forEach(form => {
@@ -63,7 +64,7 @@
                 event.preventDefault();
                 const formData = new FormData(form);
                 const voteValue = formData.get('vote');
-                const postId = form.closest('.post-card').dataset.postId;
+                const postId = form.closest('[data-post-id]').dataset.postId;
 
                 try {
                     const response = await fetch(`/posts/vote/${postId}`, {
@@ -76,7 +77,7 @@
                     const data = await response.json();
 
                     if (response.ok) {
-                        form.closest('.post-card').querySelector('.vote-count').innerText = data.votes;
+                        document.querySelector(`[data-post-id="${postId}"] .vote-count`).innerText = data.votes;
                     } else {
                         console.error(data.message);
                     }
