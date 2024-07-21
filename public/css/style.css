@@ -7,7 +7,7 @@
 /* General Styles */
 body {
   font-family: 'Arial', sans-serif;
-  background-color: #f5f5f5;
+  background-color: #f0f4f8;
   margin: 0;
   padding: 0;
   color: #333;
@@ -32,15 +32,16 @@ main {
 }
 
 .authOptions a {
-  background-color: #007bff;
+  background-color: #00b3a6;
   color: white;
   padding: 10px 20px;
   text-decoration: none;
   border-radius: 5px;
+  transition: background-color 0.3s;
 }
 
 .authOptions a:hover {
-  background-color: #0056b3;
+  background-color: #008f86;
 }
 
 /* Posts Container */
@@ -53,8 +54,8 @@ main {
 /* Individual Post Card */
 .post-card {
   background: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 20px;
   flex: 1 1 calc(33.333% - 20px);
   box-sizing: border-box;
@@ -89,7 +90,7 @@ main {
 }
 
 .vote-btn {
-  background-color: #007bff;
+  background-color: #00b3a6;
   color: white;
   border: none;
   padding: 10px;
@@ -99,18 +100,19 @@ main {
 }
 
 .vote-btn:hover {
-  background-color: #0056b3;
+  background-color: #008f86;
 }
 
 .vote-count {
   font-weight: bold;
+  color: #007bff;
 }
 
 /* Individual Post Page */
 .post-details {
   background: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 20px;
   margin-bottom: 20px;
 }
@@ -121,8 +123,8 @@ main {
 
 .comment-section {
   background: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 20px;
   margin-top: 20px;
 }
@@ -144,7 +146,7 @@ main {
 }
 
 .comment-form button {
-  background-color: #007bff;
+  background-color: #00b3a6;
   color: white;
   border: none;
   padding: 10px;
@@ -154,5 +156,5 @@ main {
 }
 
 .comment-form button:hover {
-  background-color: #0056b3;
+  background-color: #008f86;
 }
