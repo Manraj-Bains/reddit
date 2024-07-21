@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= post.title %></title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.classless.min.css" />
+    <link href="/css/style.css" rel="stylesheet" />
+</head>
+<body>
+    <main>
+        <div class="authOptions">
+            <h1>View Post</h1>
+            <a role="button" href="/posts">Home</a>
+        </div>
+        <div>
+            <h2><%= post.title %></h2>
+            <p><%= post.description %></p>
+            <p>Link: <a href="<%= post.link %>">Visit Link</a></p>
+            <p>Subgroup: <%= post.subgroup %></p>
+            <p>Created by: <%= post.creatorDetails.uname %>, at <%= new Date(post.timestamp).toLocaleString() %></p>
+            <p>Votes: <%= post.votes %></p>
+            
+            <!-- Conditional Edit Button -->
+            <% if (user && user.id === post.creator) { %>
+                <a href="/posts/edit/<%= post.id %>" class="button">Edit Post</a>
+            <% } %>
+
+            <!-- Voting section -->
+            <form action="/posts/vote/<%= post.id %>" method="post">
+                <input type="hidden" name="vote" value="1">
+                <button type="submit">Upvote</button>
+            </form>
+            <form action="/posts/vote/<%= post.id %>" method="post">
+                <input type="hidden" name="vote" value="-1">
+                <button type="submit">Downvote</button>
+            </form>
+
+            <!-- Display comments -->
+            <% if (post.comments && post.comments.length > 0) { %>
+                <% post.comments.forEach(function(comment) { %>
+                    <div>
+                        <p><%= comment.description %></p>
+                        <p>Comment by <%= comment.creatorDetails.uname %>, at <%= new Date(comment.timestamp).toLocaleString() %></p>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <p>No comments yet.</p>
+            <% } %>
+
+            <!-- Add comment form -->
+            <% if (user) { %>
+                <form action="/posts/comment-create/<%= post.id %>" method="post">
+                    <textarea name="description" required></textarea>
+                    <button type="submit">Add Comment</button>
+                </form>
+            <% } %>
+        </div>
+    </main>
+</body>
+</html>

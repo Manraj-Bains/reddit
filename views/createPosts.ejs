@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html Lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.classless.min.css"
+    />
+    <link href="/css/style.css" rel="stylesheet" />
+    <title>Create Post</title>
+</head>
+<body>
+<main>
+    <div class="authOptions">
+        <h1>Create Post</h1>
+        <a role="button" href="/posts">Home</a>
+    </div>
+    <form action="/posts/create" method="POST">
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" required>
+
+        <label for="link">Link:</label>
+        <input type="text" id="link" name="link" required>
+
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" required></textarea>
+
+        <label for="subgroup">Subgroup:</label>
+        <input type="text" id="subgroup" name="subgroup" required>
+
+        <button type="submit">Create Post</button>
+    </form>
+</main>
+</body>
+</html>
