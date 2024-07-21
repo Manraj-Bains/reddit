@@ -3,3 +3,108 @@
   justify-content: space-between;
   align-items: flex-start;
 }
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f9;
+  color: #333;
+  line-height: 1.6;
+  margin: 0;
+}
+
+main {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+h1, h2 {
+  color: #333;
+}
+
+.authOptions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.authOptions h1 {
+  margin: 0;
+}
+
+.authOptions a.button {
+  background-color: #007bff;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.authOptions a.button:hover {
+  background-color: #0056b3;
+}
+
+.post-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.post-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  flex: 1 1 calc(33.333% - 2rem);
+  box-sizing: border-box;
+}
+
+.post-card h2 {
+  margin-top: 0;
+}
+
+.vote-buttons {
+  display: flex;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.vote-buttons form {
+  margin: 0;
+}
+
+button {
+  background-color: #007bff;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+a.button {
+  background-color: #28a745;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+  cursor: pointer;
+  display: inline-block;
+}
+
+a.button:hover {
+  background-color: #218838;
+}
+
+.individualPost p {
+  margin: 0;
+  padding: 0;
+}

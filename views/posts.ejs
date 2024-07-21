@@ -4,10 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.classless.min.css"
-    />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.classless.min.css" />
     <link href="/css/style.css" rel="stylesheet" />
     <title>Homepage</title>
 </head>
@@ -24,12 +21,27 @@
     <h2>Welcome, <%= user?.uname || "Visitor" %>.</h2>
     <div>
         <h3>All Posts</h3>
-        <% posts.forEach(post => { %>
-        <div class="individualPost">
-            <a href="/posts/show/<%= post.id %>"><%= post.title %></a>
-            <p><%= post.description %></p>
+        <div class="post-container">
+            <% posts.forEach(post => { %>
+            <div class="post-card" data-post-id="<%= post.id %>">
+                <a href="/posts/show/<%= post.id %>"><%= post.title %></a>
+                <p><%= post.description %></p>
+                <p>Votes: <span class="vote-count"><%= post.votes %></span></p>
+                <% if (user) { %>
+                <div class="vote-buttons">
+                    <form action="/posts/vote/<%= post.id %>" method="post" class="vote-form">
+                        <input type="hidden" name="vote" value="1">
+                        <button type="submit" class="vote-btn">Upvote</button>
+                    </form>
+                    <form action="/posts/vote/<%= post.id %>" method="post" class="vote-form">
+                        <input type="hidden" name="vote" value="-1">
+                        <button type="submit" class="vote-btn">Downvote</button>
+                    </form>
+                </div>
+                <% } %>
+            </div>
+            <% }) %>
         </div>
-        <% }) %>
     </div>
     <div>
         <a href="/subs/list">Subgroups</a>
@@ -39,9 +51,38 @@
         <a role="button" href="/posts/create">Create Post</a>
     </div>
     <% } %>
-    <p style="color: rgb(197, 172, 172)">
-
-    </p>
+    <p style="color: rgb(197, 172, 172)"></p>
 </main>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll('.vote-form').forEach(form => {
+            form.addEventListener('submit', async function(event) {
+                event.preventDefault();
+                const formData = new FormData(form);
+                const voteValue = formData.get('vote');
+                const postId = form.closest('.post-card').dataset.postId;
+
+                try {
+                    const response = await fetch(`/posts/vote/${postId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ vote: voteValue })
+                    });
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        form.closest('.post-card').querySelector('.vote-count').innerText = data.votes;
+                    } else {
+                        console.error(data.message);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            });
+        });
+    });
+</script>
 </body>
 </html>

@@ -90,29 +90,33 @@ router.post("/comment-create/:postid", ensureAuthenticated, async (req, res) => 
 });
 
 // POST route to handle voting
-router.post("/vote/:postid", ensureAuthenticated, async (req: Request, res: Response) => {
-  const postId = parseInt(req.params.postid);
+router.post("/vote/:postId", ensureAuthenticated, async (req: Request, res: Response) => {
+  const postId = parseInt(req.params.postId);
   const userId = (req.user as TUser).id;
   const vote = parseInt(req.body.vote);
 
+  if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+  }
+
   const post = db.getPost(postId);
   if (!post) {
-    res.status(404).send("Post not found");
-    return;
+      return res.status(404).json({ message: "Post not found" });
   }
 
   // Update or remove the vote
-  if (vote === 0) {
-    post.userVotes.delete(userId);
+  if (vote === 1 || vote === -1) {
+      post.userVotes.set(userId, vote);
+  } else if (vote === 0) {
+      post.userVotes.delete(userId);
   } else {
-    post.userVotes.set(userId, vote);
+      return res.status(400).json({ message: "Invalid vote value" });
   }
 
   // Recalculate total votes
   post.votes = Array.from(post.userVotes.values()).reduce((acc, v) => acc + v, 0);
 
   db.updatePost(postId, post);
-  res.redirect(`/posts/show/${postId}`);
+  res.json({ votes: post.votes });
 });
-
 export default router;

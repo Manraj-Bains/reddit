@@ -92,13 +92,18 @@ function decoratePost(post: TPost): TEnrichedPost {
  * @param {string} sub - which sub to fetch, defaults to all subs
  */
 
-function getPosts(n = 5, sub: string | undefined = undefined) {
+function getPosts(n = 5, sub: string | undefined = undefined): TEnrichedPost[] {
   let allPosts = Object.values(posts);
   if (sub) {
-    allPosts = allPosts.filter((post) => post.subgroup === sub);
+      allPosts = allPosts.filter((post) => post.subgroup === sub);
   }
   allPosts.sort((a, b) => b.timestamp - a.timestamp);
-  return allPosts.slice(0, n);
+
+  // Ensure votes are recalculated for all posts
+  return allPosts.slice(0, n).map(post => {
+      recalculateVotes(post.id);
+      return decoratePost(post);
+  });
 }
 
 function updatePost(postId: number, changes: Partial<TPost>) {
@@ -122,7 +127,11 @@ function recalculateVotes(postId: number) {
 
 function getPost(id: number): TEnrichedPost | undefined {
   const post = posts[id];
-  return post ? decoratePost(post) : undefined;
+  if (!post) return undefined;
+
+  // Ensure votes are recalculated
+  recalculateVotes(post.id);
+  return decoratePost(post);
 }
 
 function addPost(title: string, link: string, creator: string, description: string, subgroup: string) {
